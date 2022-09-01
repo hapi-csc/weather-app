@@ -1,15 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LiveWeatherService } from '../live-weather.service';
-import { weatherData } from '../weather-response';
+import { WeatherResponse } from '../weather-response';
 import { Subscription } from 'rxjs';
-import { LocalizedString } from '@angular/compiler';
-
-enum UpdateState {
-  UNLOADED = -1,
-  ERROR = 0,
-  GOOD = 1,
-  LOADING = 2,
-}
 
 @Component({
   selector: 'app-live-weather',
@@ -19,41 +11,73 @@ enum UpdateState {
 export class LiveWeatherComponent implements OnInit {
 
   private weatherSub: Subscription | null = null;
-  data: weatherData | null = null;
-  appState: UpdateState = UpdateState.UNLOADED;
+  weatherResp: WeatherResponse | null = null;
 
   constructor(private weatherService: LiveWeatherService) {}
 
   ngOnInit(): void {
-    this.appState = UpdateState.LOADING;
     this.weatherService.refresh();
-    this.weatherSub = this.weatherService.getWeather().subscribe(weather => this.data = weather['current'] )
-    this.appState = (this.data !== null) ? UpdateState.GOOD : UpdateState.ERROR;
+    this.weatherSub = this.weatherService.getWeather().subscribe(weather => this.weatherResp = weather )
   }
 
-  private unixToHHMMSS() {
-    let unix_timestamp = 1549312452
+  isWeather(): boolean {
+    return ( this.weatherResp && this.weatherResp["sys"]) ? true : false;
+  }
+
+  private kToF(k: number): number {
+    return (k - 273.15) * 9.0 / 5.0 + 32;
+  }
+
+  getTemperatureF(): number | null {
+    let temp = null;
+    if  (this.isWeather()) {
+      temp = Number(this.kToF(this.weatherResp!["main"]["temp"]).toPrecision(4));
+    }
+    return temp;
+  }
+
+  private unixToHHMMXX(unix_time: number): string {
     // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-    var date = new Date(unix_timestamp * 1000);
+    var ampm = 'AM';
+    var date = new Date(unix_time * 1000);
     var hours = date.getHours();
-    var minutes = "0" + date.getMinutes();
-    var seconds = "0" + date.getSeconds();
-
-    // Will display time in 10:30:23 format
-    var formattedTime = hours + ':' + minutes.substring(-2) + ':' + seconds.substring(-2);
-
-    console.log(formattedTime);
+    if (hours > 12) {
+      hours = hours - 12;
+      ampm = 'PM';
+    }
+    var minutes = String(date.getMinutes());
+    return hours + ':' + minutes.substring(-2) + ' ' + ampm;
   }
 
-  refresh(): void {
+  getSunrise(): string | null {
+    let sunrise = null;
+    if(this.isWeather()) {
+      sunrise = this.unixToHHMMXX(this.weatherResp!["sys"]["sunrise"]);
+    }
+    return sunrise;
   }
 
-  getLOAD(): UpdateState {
-    return UpdateState.LOADING;
+  getSunset(): string | null {
+    let sunset = null;
+    if(this.isWeather()) {
+      sunset = this.unixToHHMMXX(this.weatherResp!["sys"]["sunset"]);
+    }
+    return sunset;
   }
 
-  getGOOD(): UpdateState {
-    return UpdateState.GOOD;
+  getWindSpeed(): number | null {
+    let windspeed = null;
+    if ( this.isWeather() ) {
+      windspeed = this.weatherResp!["wind"]["speed"]
+    }
+    return windspeed;
   }
 
+  getWindDirection(): number | null {
+    let winddir = null;
+    if ( this.isWeather() ) {
+      winddir = this.weatherResp!["wind"]["deg"]
+    }
+    return winddir;
+  }
 }

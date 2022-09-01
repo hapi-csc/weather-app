@@ -1,6 +1,5 @@
-<ng-container [ngSwitch]="appState">
-
-<main *ngSwitchCase="getGOOD()">
+<ng-container *ngIf="isWeather()">
+<main>
   <header>
     <div id="title">
       <div id="day">Tuesday</div>
@@ -13,25 +12,17 @@
   </header>
   <summary>
     <div id="city-state">Baton Rouge, LA</div>
-    <div id="temp">{{data!["temp"]}}&#xb0; F</div>
+    <div id="temp">{{getTemperatureF()}}&#xb0; F</div>
   </summary>
   <section>
     <div id="sunrise-sunset">
-      <div><strong>Sunrise:</strong> {{data!["sunrise"]}}</div>
-      <div><strong>Sunset:</strong>&nbsp; {{data!["sunset"]}}</div>
+      <div><strong>Sunrise:</strong> {{getSunrise()}}</div>
+      <div><strong>Sunset:</strong>&nbsp; {{getSunset()}}</div>
     </div>
     <div id="rain-wind">
       <div><strong>Rain:</strong> {{"nothing yet :c"}}</div>
-      <div><strong>Wind:</strong> {{data!["wind_speed"]}} mph {{data!["wind_deg"]}}&#xb0;</div>
+      <div><strong>Wind:</strong> {{getWindSpeed()}} mph {{getWindDirection()}}&#xb0;</div>
     </div>
   </section>
-  <footer>
-    <button (click)="refresh()">Refresh</button>
-  </footer>
 </main>
-
-<main *ngSwitchDefault>
-  <div>Loading...</div>
-</main>
-
 </ng-container>

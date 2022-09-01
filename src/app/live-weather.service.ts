@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { weatherResponse } from './weather-response';
+import { WeatherResponse } from './weather-response';
 
-// TODO add config.json to create this url dynamically
-const url = 'https://api.openweathermap.org/data/2.5/weather';
+const url = 'api/weather_response';
 
 interface HttpOptions {
   headers: HttpHeaders,
@@ -15,8 +14,8 @@ interface HttpOptions {
 })
 export class LiveWeatherService {
 
-  private _weather$: Observable<weatherResponse> | null;
-  private weather$: Subject<weatherResponse>;
+  private _weather$: Observable<WeatherResponse> | null;
+  private weather$: Subject<WeatherResponse>;
   private httpOptions: HttpOptions = {
     headers: new HttpHeaders({ 
       'q': 'Baton Rouge',
@@ -26,16 +25,16 @@ export class LiveWeatherService {
 
   constructor(private http: HttpClient) {
     this._weather$ = null;
-    this.weather$ = new BehaviorSubject<weatherResponse>({} as weatherResponse);
+    this.weather$ = new BehaviorSubject<WeatherResponse>({} as WeatherResponse);
     this.refresh();
   }
 
   refresh(): void {
-    this._weather$ = this.http.get<weatherResponse>(url, this.httpOptions);
+    this._weather$ = this.http.get<WeatherResponse>(url);
     this._weather$.subscribe(weather => this.weather$.next(weather) )
   }
 
-  getWeather(): Observable<weatherResponse> {
+  getWeather(): Observable<WeatherResponse> {
     return this.weather$;
   }
 }
