@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { weatherResponse } from './weather-response';
 
 // TODO add config.json to create this url dynamically
-const url = 'https://openweathermap.org/data/2.5/onecall?lat=30.4508&lon=-91.1545&units=imperial&appid=439d4b804bc8187953eb36d2a8c26a02'
+const url = 'https://api.openweathermap.org/data/2.5/weather';
+
+interface HttpOptions {
+  headers: HttpHeaders,
+};
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +17,12 @@ export class LiveWeatherService {
 
   private _weather$: Observable<weatherResponse> | null;
   private weather$: Subject<weatherResponse>;
+  private httpOptions: HttpOptions = {
+    headers: new HttpHeaders({ 
+      'q': 'Baton Rouge',
+      'appid': '913e36517ce80d01b33a35a3980ea586',
+  })
+  };
 
   constructor(private http: HttpClient) {
     this._weather$ = null;
@@ -21,7 +31,7 @@ export class LiveWeatherService {
   }
 
   refresh(): void {
-    this._weather$ = this.http.get<weatherResponse>(url);
+    this._weather$ = this.http.get<weatherResponse>(url, this.httpOptions);
     this._weather$.subscribe(weather => this.weather$.next(weather) )
   }
 
