@@ -19,7 +19,7 @@ export class LiveWeatherService {
   private httpOptions: HttpOptions = {
     headers: new HttpHeaders({ 
       'q': 'Baton Rouge',
-      'appid': '913e36517ce80d01b33a35a3980ea586',
+      'appid': '913e36517ce80d01b33a35a3980ea586', //not live, just an example... will be handled by backend
   })
   };
 
