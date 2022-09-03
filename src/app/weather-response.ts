@@ -36,7 +36,7 @@ export interface WeatherResponse {
       "sunrise": number,
       "sunset": number
     },
-    "timezone": number
+    "timezone": number //shift in seconds from UTC
     "id": number,
     "name": string,
     "cod": number

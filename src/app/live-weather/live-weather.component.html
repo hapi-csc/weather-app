@@ -2,12 +2,12 @@
 <main>
   <header>
     <div id="title">
-      <div id="day">Tuesday</div>
-      <div id="d-m-y">8/30/22</div>
+      <div id="day">{{getDay()}}</div>
+      <div id="d-m-y">{{getMDY()}}</div>
     </div>
     <div id="time">
-      <div id="number">12:32:06</div>
-      <div id="am-pm">PM</div>
+      <div id="number">{{getTime()}}</div>
+      <div id="am-pm">{{getMeridiem()}}</div>
     </div>
   </header>
   <summary>

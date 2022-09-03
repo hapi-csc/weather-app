@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 
-import { WeatherResponse, MOCK_RESPONSE } from './weather-response';
+import { MOCK_RESPONSE } from './weather-response';
 
 @Injectable({
   providedIn: 'root'
